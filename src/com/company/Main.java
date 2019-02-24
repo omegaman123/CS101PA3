@@ -7,7 +7,9 @@ import java.util.Hashtable;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+
 public class Main {
+    private static final int hashsize = 128000;
 
     public static void main(String[] args) throws Exception {
         String fileName = args[0];
@@ -15,43 +17,24 @@ public class Main {
         Scanner in = new Scanner(new File(fileName));
         int n = in.nextInt();
         Hashtable<String, ArrayList<Anagram>> h = new Hashtable<>();
-        ArrayList<ArrayList<Anagram>> a = new ArrayList<>(128000);
+        ArrayList<ArrayList<Anagram>> a = new ArrayList<>(hashsize);
+        System.out.println(hashsize);
 
-
-
-//        Anagram a = new Anagram("items");
-//        Anagram b = new Anagram("emits");
-//        Anagram c = new Anagram("metis");
-//        Anagram d = new Anagram("mites");
-//        Anagram e = new Anagram("smite");
-//        Anagram f = new Anagram("stime");
-//        Anagram g = new Anagram("times");
-//
-//
-//        System.out.println(a.compareTo(b));
-//        System.out.println(a.getCode());
-//        System.out.println(b.getCode());
-//        System.out.println(c.getCode());
-//        System.out.println(d.getCode());
-//        System.out.println(e.getCode());
-//        System.out.println(f.getCode());
-//        System.out.println(g.getCode());
-
-
+        for (int i = 0; i < hashsize; i++) {
+            a.add(new ArrayList<>());
+        }
+        System.out.println(a.size());
         for (int i = 0; i < n; i++) {
             String s = in.next();
             Anagram agram = new Anagram(s);
-            int hsh = (int)hash(agram.getCode());
-
+            long hsh = hash(agram.getCode());
+            int idx = Math.abs((int)(hsh % hashsize));
+            a.get(idx).add(agram);
         }
-
-
-        FindAnagrams(h);
-
-
+        FindAnagrams(a);
     }
 
-    public static void FindAnagrams(Hashtable<String, ArrayList<Anagram>> h) {
+    public static void FindAnagrams(ArrayList<ArrayList<Anagram>> a) {
         Scanner scanner = new Scanner(System.in);
         String input;
         try {
@@ -62,12 +45,20 @@ public class Main {
                 for (int j = 0; j < words.length; j++) {
                     System.out.printf("Anagrams for input word %s:\n", words[j]);
                     Anagram agm = new Anagram(words[j]);
-                    ArrayList<Anagram> l = h.get(agm.getCode());
+                    long hsh = hash(agm.getCode());
+                    int idx = Math.abs((int)(hsh % hashsize));
+                    ArrayList<Anagram> l = a.get(idx);
+                    if (l == null) {
+                        System.out.printf("No anagrams for word %s found", words[j]);
+                        continue;
+                    }
                     for (int i = 0; i < l.size(); i++) {
                         if (l.get(i).getWord().compareTo(agm.getWord()) == 0) {
                             continue;
                         }
-                        System.out.println(l.get(i).getWord());
+                        if (l.get(i).getCode().compareTo(agm.getCode()) == 0) {
+                            System.out.println(l.get(i).getWord());
+                        }
                     }
                     System.out.println();
                 }
