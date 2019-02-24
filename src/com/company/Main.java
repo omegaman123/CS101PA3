@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -49,7 +50,43 @@ public class Main {
 
         }
         System.out.println(h.size());
+        FindAnagrams(h);
+
+
     }
+
+    public static void FindAnagrams(Hashtable<String,ArrayList<Anagram>> h){
+        Scanner scanner = new Scanner(System.in);
+        String input ;
+        try {
+            while (true) {
+                System.out.println("type a string of letters");
+                input = scanner.nextLine();
+                Anagram agm = new Anagram(input);
+                ArrayList<Anagram> l = h.get(agm.getCode());
+                for (int i = 0; i < l.size(); i++){
+                    if (l.get(i).getWord() == agm.getWord()){
+                        continue;
+                    }
+                    System.out.println(l.get(i).getWord());
+                }
+                System.out.println("Do another (y/n)?");
+                input = scanner.nextLine();
+                if (input.compareTo("y") == 0){
+                    continue;
+                }
+                break;
+            }
+        } catch(IllegalStateException | NoSuchElementException e) {
+            // System.in has been closed
+            System.out.println("System.in was closed; exiting");
+        }
+
+    }
+
+
+
+
 
     public static long hash(String string) {
         long h = 1125899906842597L; // prime
