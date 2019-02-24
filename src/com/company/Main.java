@@ -15,6 +15,8 @@ public class Main {
         Scanner in = new Scanner(new File(fileName));
         int n = in.nextInt();
         Hashtable<String, ArrayList<Anagram>> h = new Hashtable<>();
+        ArrayList<ArrayList<Anagram>> a = new ArrayList<>(128000);
+
 
 
 //        Anagram a = new Anagram("items");
@@ -39,17 +41,11 @@ public class Main {
         for (int i = 0; i < n; i++) {
             String s = in.next();
             Anagram agram = new Anagram(s);
-            ArrayList<Anagram> l = h.get(agram.getCode());
-            if (l == null) {
-                l = new ArrayList<>();
-                l.add(agram);
-                h.put(agram.getCode(), l);
-            } else {
-                l.add(agram);
-            }
+            int hsh = (int)hash(agram.getCode());
 
         }
-        System.out.println(h.size());
+
+
         FindAnagrams(h);
 
 
@@ -83,7 +79,6 @@ public class Main {
                 break;
             }
         } catch (IllegalStateException | NoSuchElementException e) {
-            // System.in has been closed
             System.out.println("System.in was closed; exiting");
         }
 
