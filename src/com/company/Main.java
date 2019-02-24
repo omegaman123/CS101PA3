@@ -14,7 +14,7 @@ public class Main {
         System.out.println(args[0]);
         Scanner in = new Scanner(new File(fileName));
         int n = in.nextInt();
-        Hashtable<String,ArrayList<Anagram>> h = new Hashtable<>();
+        Hashtable<String, ArrayList<Anagram>> h = new Hashtable<>();
 
 
 //        Anagram a = new Anagram("items");
@@ -40,10 +40,10 @@ public class Main {
             String s = in.next();
             Anagram agram = new Anagram(s);
             ArrayList<Anagram> l = h.get(agram.getCode());
-            if (l == null){
+            if (l == null) {
                 l = new ArrayList<>();
-               l.add(agram);
-               h.put(agram.getCode(),l);
+                l.add(agram);
+                h.put(agram.getCode(), l);
             } else {
                 l.add(agram);
             }
@@ -55,29 +55,34 @@ public class Main {
 
     }
 
-    public static void FindAnagrams(Hashtable<String,ArrayList<Anagram>> h){
+    public static void FindAnagrams(Hashtable<String, ArrayList<Anagram>> h) {
         Scanner scanner = new Scanner(System.in);
-        String input ;
+        String input;
         try {
             while (true) {
                 System.out.println("type a string of letters");
                 input = scanner.nextLine();
-                Anagram agm = new Anagram(input);
-                ArrayList<Anagram> l = h.get(agm.getCode());
-                for (int i = 0; i < l.size(); i++){
-                    if (l.get(i).getWord() == agm.getWord()){
-                        continue;
+                String[] words = input.split("\\s+");
+                for (int j = 0; j < words.length; j++) {
+                    System.out.printf("Anagrams for input word %s:\n", words[j]);
+                    Anagram agm = new Anagram(words[j]);
+                    ArrayList<Anagram> l = h.get(agm.getCode());
+                    for (int i = 0; i < l.size(); i++) {
+                        if (l.get(i).getWord().compareTo(agm.getWord()) == 0) {
+                            continue;
+                        }
+                        System.out.println(l.get(i).getWord());
                     }
-                    System.out.println(l.get(i).getWord());
+                    System.out.println();
                 }
                 System.out.println("Do another (y/n)?");
                 input = scanner.nextLine();
-                if (input.compareTo("y") == 0){
+                if (input.compareTo("y") == 0) {
                     continue;
                 }
                 break;
             }
-        } catch(IllegalStateException | NoSuchElementException e) {
+        } catch (IllegalStateException | NoSuchElementException e) {
             // System.in has been closed
             System.out.println("System.in was closed; exiting");
         }
@@ -85,15 +90,12 @@ public class Main {
     }
 
 
-
-
-
     public static long hash(String string) {
         long h = 1125899906842597L; // prime
         int len = string.length();
 
         for (int i = 0; i < len; i++) {
-            h = 31*h + string.charAt(i);
+            h = 31 * h + string.charAt(i);
         }
         return h;
     }
