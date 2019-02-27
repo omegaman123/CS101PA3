@@ -2,6 +2,9 @@ package com.company;
 
 import java.util.Arrays;
 
+// Each anagram object contains a string for the word itself
+// and a String for code which is the characters of the word
+// in alphabetical order
 public class Anagram {
     private String word;
     private String code;
@@ -28,9 +31,6 @@ public class Anagram {
         return this.word;
     }
 
-    public String getCode(){
-        return this.code;
-    }
 
     public boolean compareTo(Anagram that) {
         if (this.code.compareTo(that.code) == 0) {
