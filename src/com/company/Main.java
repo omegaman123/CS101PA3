@@ -13,43 +13,46 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         String fileName = args[0];
-        System.out.println(args[0]);
+        String testFileName;
+        try {
+            testFileName = args[1];
+        } catch (Exception e) {
+            testFileName = null;
+        }
         Scanner in = new Scanner(new File(fileName));
         int n = in.nextInt();
-        Hashtable<String, ArrayList<Anagram>> h = new Hashtable<>();
         ArrayList<ArrayList<Anagram>> a = new ArrayList<>(hashsize);
-        System.out.println(hashsize);
 
         for (int i = 0; i < hashsize; i++) {
             a.add(new ArrayList<>());
         }
-        System.out.println(a.size());
+
         for (int i = 0; i < n; i++) {
             String s = in.next();
             Anagram agram = new Anagram(s);
             long hsh = hash(agram.getCode());
-            int idx = Math.abs((int)(hsh % hashsize));
+            int idx = Math.abs((int) (hsh % hashsize));
             a.get(idx).add(agram);
         }
-        FindAnagrams(a);
+        FindAnagrams(a, testFileName);
     }
 
-    public static void FindAnagrams(ArrayList<ArrayList<Anagram>> a) {
+    public static void FindAnagrams(ArrayList<ArrayList<Anagram>> a, String testfile) throws Exception {
         Scanner scanner = new Scanner(System.in);
         String input;
         try {
-            while (true) {
-                System.out.println("type a string of letters");
-                input = scanner.nextLine();
-                String[] words = input.split("\\s+");
-                for (int j = 0; j < words.length; j++) {
-                    System.out.printf("Anagrams for input word %s:\n", words[j]);
-                    Anagram agm = new Anagram(words[j]);
+            if (testfile != null) {
+                Scanner in = new Scanner(new File(testfile));
+                while (in.hasNextLine()) {
+                    System.out.println("type a string of letters");
+                    input = in.nextLine();
+                    System.out.println(input);
+                    Anagram agm = new Anagram(input);
                     long hsh = hash(agm.getCode());
-                    int idx = Math.abs((int)(hsh % hashsize));
+                    int idx = Math.abs((int) (hsh % hashsize));
                     ArrayList<Anagram> l = a.get(idx);
                     if (l == null) {
-                        System.out.printf("No anagrams for word %s found", words[j]);
+                        System.out.printf("No anagrams for word %s found", input);
                         continue;
                     }
                     for (int i = 0; i < l.size(); i++) {
@@ -60,14 +63,49 @@ public class Main {
                             System.out.println(l.get(i).getWord());
                         }
                     }
-                    System.out.println();
+
+                    if (in.hasNextLine()) {
+                        System.out.println("Do another (y/n)?");
+                        System.out.println("y");
+                        continue;
+                    }
+                    System.out.println("Do another (y/n)?");
+                    System.out.println("n");
                 }
-                System.out.println("Do another (y/n)?");
-                input = scanner.nextLine();
-                if (input.compareTo("y") == 0) {
-                    continue;
+
+
+            } else {
+                while (true) {
+                    System.out.println("type a string of letters");
+                    input = scanner.nextLine();
+                    String[] words = input.split("\\s+");
+                    for (int j = 0; j < words.length; j++) {
+                        System.out.printf("Anagrams for input word %s:\n", words[j]);
+                        Anagram agm = new Anagram(words[j]);
+                        long hsh = hash(agm.getCode());
+                        int idx = Math.abs((int) (hsh % hashsize));
+                        ArrayList<Anagram> l = a.get(idx);
+                        if (l == null) {
+                            System.out.printf("No anagrams for word %s found", words[j]);
+                            continue;
+                        }
+                        for (int i = 0; i < l.size(); i++) {
+                            if (l.get(i).getWord().compareTo(agm.getWord()) == 0) {
+                                continue;
+                            }
+                            if (l.get(i).getCode().compareTo(agm.getCode()) == 0) {
+                                System.out.println(l.get(i).getWord());
+                            }
+                        }
+
+                    }
+                    System.out.println("Do another (y/n)?");
+                    input = scanner.nextLine();
+                    if (input.compareTo("y") == 0) {
+                        continue;
+                    }
+                    break;
                 }
-                break;
             }
         } catch (IllegalStateException | NoSuchElementException e) {
             System.out.println("System.in was closed; exiting");
